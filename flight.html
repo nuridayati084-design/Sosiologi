@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sociology Flight Mission</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #a8e6cf, #56ab2f);
+      font-family: sans-serif;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 14px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="score">Score: 0</div>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script>
+    // 3D Scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Lighting
+    const light = new THREE.PointLight(0xffffff, 1, 0);
+    light.position.set(0, 50, 50);
+    scene.add(light);
+
+    // Airplane (simple box)
+    const geometry = new THREE.BoxGeometry(1, 0.5, 2);
+    const material = new THREE.MeshPhongMaterial({ color: 0x4CAF50 });
+    const airplane = new THREE.Mesh(geometry, material);
+    scene.add(airplane);
+
+    // Clouds (random spheres)
+    const clouds = [];
+    const cloudGeo = new THREE.SphereGeometry(1, 8, 8);
+    const cloudMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    for (let i = 0; i < 20; i++) {
+      const cloud = new THREE.Mesh(cloudGeo, cloudMat);
+      cloud.position.set(Math.random()*20-10, Math.random()*10-5, -Math.random()*200);
+      scene.add(cloud);
+      clouds.push(cloud);
+    }
+
+    camera.position.z = 5;
+
+    // Movement and score
+    let score = 0;
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') airplane.position.x -= 0.3;
+      if (e.key === 'ArrowRight') airplane.position.x += 0.3;
+      if (e.key === 'ArrowUp') airplane.position.y += 0.3;
+      if (e.key === 'ArrowDown') airplane.position.y -= 0.3;
+    });
+
+    // Animate scene
+    function animate() {
+      requestAnimationFrame(animate);
+      clouds.forEach(cloud => {
+        cloud.position.z += 0.5;
+        if (cloud.position.z > 5) {
+          cloud.position.z = -200;
+          cloud.position.x = Math.random()*20-10;
+          cloud.position.y = Math.random()*10-5;
+          score += 10;
+          document.getElementById("score").textContent = "Score: " + score;
+        }
+      });
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
