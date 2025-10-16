@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sosiologi EduGame — SMAS Islam Terpadu Al-Madaniyah Samuda</title>
+
+  <!-- Nature-themed background -->
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(to bottom, #c8facc, #e9fff1);
+      color: #043b18;
+      overflow-x: hidden;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background: #2e8b57;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    header img {
+      height: 80px;
+      border-radius: 50%;
+    }
+    h1 {
+      margin: 10px 0;
+    }
+    p.subtitle {
+      font-size: 1.1rem;
+      color: #e0ffe8;
+    }
+    main {
+      text-align: center;
+      padding: 40px;
+    }
+    .btn {
+      display: inline-block;
+      margin: 15px;
+      padding: 14px 28px;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      border: none;
+      background-color: #2e8b57;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+    .btn:hover {
+      background-color: #3fbf72;
+      transform: scale(1.05);
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #2e8b57;
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+    #scene-container {
+      width: 100%;
+      height: 400px;
+      margin-top: 40px;
+      background: #bfffd0;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="images/logo.png" alt="School Logo" />
+    <h1>Sosiologi EduGame</h1>
+    <p class="subtitle">SMAS Islam Terpadu Al-Madaniyah Samuda</p>
+  </header>
+
+  <main>
+    <h2>🌿 Sosiologi sebagai Ilmu yang Berparadigma Ganda 🌿</h2>
+    <p>
+      Explore the fascinating world of sociology through games and quizzes.<br>
+      Learn, play, and grow with fun and interactive learning!
+    </p>
+
+    <div>
+      <button class="btn" onclick="window.location.href='quiz.html'">🧠 Start Quiz</button>
+      <button class="btn" onclick="window.location.href='flight.html'">✈️ Play 3D Game</button>
+    </div>
+
+    <div id="scene-container"></div>
+  </main>
+
+  <footer>
+    Developed by <strong>Nur Idayati, S.Sos.</strong> — 2025 © SMAS Islam Terpadu Al-Madaniyah Samuda
+  </footer>
+
+  <!-- 3D Airplane Mini Scene -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script>
+    const container = document.getElementById("scene-container");
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / 400, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, 400);
+    container.appendChild(renderer.domElement);
+
+    // Simple airplane (3D)
+    const airplaneGeometry = new THREE.BoxGeometry(1, 0.3, 2);
+    const airplaneMaterial = new THREE.MeshPhongMaterial({ color: 0x2e8b57 });
+    const airplane = new THREE.Mesh(airplaneGeometry, airplaneMaterial);
+    scene.add(airplane);
+
+    // Lighting
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+    // Clouds
+    const cloudGeometry = new THREE.SphereGeometry(0.5, 12, 12);
+    const cloudMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const clouds = [];
+    for (let i = 0; i < 10; i++) {
+      const cloud = new THREE.Mesh(cloudGeometry, cloudMaterial);
+      cloud.position.set((Math.random() - 0.5) * 10, Math.random() * 3, -Math.random() * 20);
+      scene.add(cloud);
+      clouds.push(cloud);
+    }
+
+    camera.position.z = 5;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      airplane.rotation.y += 0.01;
+      clouds.forEach(c => c.position.z += 0.05);
+      clouds.forEach(c => {
+        if (c.position.z > 5) c.position.z = -20;
+      });
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / 400;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, 400);
+    });
+  </script>
+</body>
+</html>
